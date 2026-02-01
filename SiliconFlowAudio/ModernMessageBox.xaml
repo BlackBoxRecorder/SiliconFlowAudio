@@ -1,0 +1,90 @@
+﻿<Window
+    x:Class="SiliconFlowAudio.ModernMessageBox"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SiliconFlowAudio"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title=""
+    Width="400"
+    Height="180"
+    AllowsTransparency="True"
+    Background="Transparent"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="None"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <Style
+            x:Key="StandardButtonStyle"
+            BasedOn="{StaticResource ModernButtonStyle}"
+            TargetType="Button">
+            <Setter Property="Width" Value="80" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Window.Resources>
+
+    <Border
+        Margin="20"
+        Background="White"
+        CornerRadius="12"
+        Effect="{StaticResource DropShadowEffect}">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="50" />
+            </Grid.RowDefinitions>
+
+
+            <TextBlock
+                x:Name="MessageText"
+                VerticalAlignment="Center"
+                FontSize="14"
+                TextWrapping="Wrap" />
+
+
+            <!--  Buttons  -->
+            <StackPanel
+                Grid.Row="2"
+                Margin="0,15,0,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="YesButton"
+                    MinWidth="70"
+                    Margin="5,0"
+                    Click="YesButton_Click"
+                    Content="是"
+                    Style="{StaticResource StandardButtonStyle}"
+                    Visibility="Collapsed" />
+                <Button
+                    x:Name="NoButton"
+                    MinWidth="70"
+                    Margin="5,0"
+                    Click="NoButton_Click"
+                    Content="否"
+                    Style="{StaticResource StandardButtonStyle}"
+                    Visibility="Collapsed" />
+                <Button
+                    x:Name="OKButton"
+                    MinWidth="70"
+                    Margin="5,0"
+                    Click="OKButton_Click"
+                    Content="确定"
+                    Style="{StaticResource StandardButtonStyle}"
+                    Visibility="Collapsed" />
+                <Button
+                    x:Name="CancelButton"
+                    MinWidth="70"
+                    Margin="5,0"
+                    Click="CancelButton_Click"
+                    Content="取消"
+                    Style="{StaticResource StandardButtonStyle}"
+                    Visibility="Collapsed" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

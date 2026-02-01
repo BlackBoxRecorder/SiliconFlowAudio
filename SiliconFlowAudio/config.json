@@ -1,0 +1,9 @@
+{
+  "SiliconFlow": {
+    "Name": "SiliconFlow",
+    "ApiKey": "",
+    "Model": null,
+    "IsActive": true
+  },
+  "ActiveService": "SiliconFlow"
+}

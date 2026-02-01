@@ -1,0 +1,417 @@
+<Window
+    x:Class="AudioTranscription.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:AudioTranscription"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="SiliconFlow 语音转文本/文本转语音/声音克隆"
+    Width="800"
+    Height="500"
+    Icon="Resources/audio.ico"
+    Loaded="Window_Loaded"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <!--  定义按钮样式  -->
+        <Style
+            x:Key="TopBarButtonStyle"
+            BasedOn="{StaticResource ModernButtonStyle}"
+            TargetType="Button">
+            <Setter Property="Width" Value="60" />
+            <Setter Property="Height" Value="25" />
+            <Setter Property="Margin" Value="5,5,5,0" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+
+        <Style
+            x:Key="StandardButtonStyle"
+            BasedOn="{StaticResource ModernButtonStyle}"
+            TargetType="Button">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  主要内容区域  -->
+        <TabControl
+            Grid.Row="1"
+            Margin="15"
+            ItemContainerStyle="{StaticResource ModernTabItemStyle}"
+            Style="{StaticResource ModernTabControlStyle}">
+            <TabItem x:Name="tab1" Header="语音转文字">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="93*" />
+                        <ColumnDefinition Width="304*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel
+                        Grid.ColumnSpan="2"
+                        Margin="10,10,10,10"
+                        Orientation="Horizontal">
+                        <Button
+                            x:Name="LoadAudioButton"
+                            Margin="0,0,10,0"
+                            Click="LoadAudioButton_Click"
+                            Content="选择音频"
+                            Style="{StaticResource StandardButtonStyle}" />
+                        <Button
+                            x:Name="TranscribeButton"
+                            Click="TranscribeButton_Click"
+                            Content="转录文字"
+                            Style="{StaticResource StandardButtonStyle}" />
+                        <TextBlock
+                            x:Name="AudioFilePathText"
+                            Margin="10,0,0,0"
+                            VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBox
+                        x:Name="TranscriptionTextBox"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        Margin="10,10,10,10"
+                        AcceptsReturn="True"
+                        Style="{StaticResource ModernTextBoxStyle}"
+                        TextWrapping="Wrap"
+                        VerticalScrollBarVisibility="Auto" />
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="文字转语音">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <GroupBox
+                        Grid.Row="0"
+                        Margin="10,10,10,5"
+                        Header="音色选择">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel
+                                Grid.Column="0"
+                                Margin="5"
+                                Orientation="Horizontal">
+                                <Label VerticalAlignment="Center" Content="使用模式:" />
+                                <RadioButton
+                                    x:Name="PresetVoiceRadio"
+                                    Margin="10,0"
+                                    VerticalAlignment="Center"
+                                    Checked="VoiceMode_Checked"
+                                    Content="预设音色"
+                                    GroupName="VoiceMode"
+                                    IsChecked="True" />
+                                <RadioButton
+                                    x:Name="ReferenceVoiceRadio"
+                                    Margin="10,0"
+                                    VerticalAlignment="Center"
+                                    Checked="VoiceMode_Checked"
+                                    Content="参考音频"
+                                    GroupName="VoiceMode" />
+                            </StackPanel>
+                            <StackPanel
+                                Grid.Column="1"
+                                Margin="25,5,5,5"
+                                Orientation="Horizontal">
+                                <Label VerticalAlignment="Center" Content="选择音色:" />
+                                <ComboBox
+                                    x:Name="VoiceComboBox"
+                                    Width="200"
+                                    Margin="10,0,10,0"
+                                    SelectedIndex="0"
+                                    Style="{StaticResource ModernComboBoxStyle}">
+                                    <ComboBoxItem Content="Anna (女声)" Tag="FunAudioLLM/CosyVoice2-0.5B:anna" />
+                                    <ComboBoxItem Content="Alex (男声)" Tag="FunAudioLLM/CosyVoice2-0.5B:alex" />
+                                    <ComboBoxItem Content="Bella (女声)" Tag="FunAudioLLM/CosyVoice2-0.5B:bella" />
+                                    <ComboBoxItem Content="Benjamin (男声)" Tag="FunAudioLLM/CosyVoice2-0.5B:benjamin" />
+                                    <ComboBoxItem Content="Charles (男声)" Tag="FunAudioLLM/CosyVoice2-0.5B:charles" />
+                                    <ComboBoxItem Content="Claire (女声)" Tag="FunAudioLLM/CosyVoice2-0.5B:claire" />
+                                    <ComboBoxItem Content="David (男声)" Tag="FunAudioLLM/CosyVoice2-0.5B:david" />
+                                    <ComboBoxItem Content="Diana (女声)" Tag="FunAudioLLM/CosyVoice2-0.5B:diana" />
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox
+                        Grid.Row="1"
+                        Margin="10,5"
+                        Header="输入文本">
+                        <TextBox
+                            x:Name="TextInputBox"
+                            Margin="10"
+                            AcceptsReturn="True"
+                            Style="{StaticResource ModernTextBoxStyle}"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Auto" />
+                    </GroupBox>
+
+                    <GroupBox
+                        Grid.Row="2"
+                        Margin="10,5,10,10"
+                        Header="操作">
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                x:Name="ConvertToSpeechButton"
+                                Margin="5"
+                                Click="ConvertToSpeechButton_Click"
+                                Content="转换"
+                                Style="{StaticResource StandardButtonStyle}" />
+
+                            <Label
+                                x:Name="TextTTsAudioFile"
+                                Margin="20,0"
+                                VerticalAlignment="Center"
+                                Content="" />
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="上传参考音频">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="10">
+                        <GroupBox Margin="0,0,0,10" Header="上传参考音频">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="0,5"
+                                    VerticalAlignment="Center"
+                                    Content="选择音频文件:" />
+                                <StackPanel
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="5,5"
+                                    Orientation="Horizontal">
+                                    <TextBox
+                                        x:Name="ReferenceAudioPathText"
+                                        Width="350"
+                                        IsReadOnly="True"
+                                        Style="{StaticResource ModernTextBoxStyle}" />
+                                    <Button
+                                        x:Name="SelectReferenceAudioButton"
+                                        Margin="5,0"
+                                        Click="SelectReferenceAudioButton_Click"
+                                        Content="浏览"
+                                        Style="{StaticResource StandardButtonStyle}" />
+                                </StackPanel>
+
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="0,5"
+                                    VerticalAlignment="Center"
+                                    Content="音频对应的文本:" />
+                                <TextBox
+                                    x:Name="ReferenceAudioTextBox"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Width="455"
+                                    Height="80"
+                                    Margin="5,5"
+                                    HorizontalAlignment="Left"
+                                    AcceptsReturn="True"
+                                    Style="{StaticResource ModernTextBoxStyle}"
+                                    TextWrapping="Wrap" />
+
+                                <StackPanel
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
+                                    Orientation="Horizontal">
+                                    <Label
+                                        Margin="0,5"
+                                        VerticalAlignment="Center"
+                                        Content="自定义音色名称:" />
+                                    <TextBox
+                                        x:Name="CustomVoiceNameText"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Width="178"
+                                        Margin="5,5"
+                                        HorizontalAlignment="Left"
+                                        Style="{StaticResource ModernTextBoxStyle}"
+                                        Text="my-voice" />
+
+                                    <Label
+                                        Margin="30,5,0,5"
+                                        VerticalAlignment="Center"
+                                        Content="模型:" />
+                                    <ComboBox
+                                        x:Name="UploadModelComboBox"
+                                        Grid.Row="3"
+                                        Grid.Column="1"
+                                        Width="200"
+                                        Margin="5,5"
+                                        HorizontalAlignment="Left"
+                                        SelectedIndex="0"
+                                        Style="{StaticResource ModernComboBoxStyle}">
+                                        <ComboBoxItem Content="CosyVoice2-0.5B" Tag="FunAudioLLM/CosyVoice2-0.5B" />
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <StackPanel
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    Margin="0,10,5,0"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        x:Name="UploadReferenceAudioButton"
+                                        Click="UploadReferenceAudioButton_Click"
+                                        Content="上传参考音频"
+                                        Style="{StaticResource StandardButtonStyle}" />
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+
+                        <!--  管理参考音频  -->
+                        <GroupBox Margin="0,10,0,10" Header="管理参考音频">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        x:Name="RefreshVoicesButton"
+                                        Margin="0,0,10,0"
+                                        Padding="10,5"
+                                        Click="RefreshVoicesButton_Click"
+                                        Content="刷新列表"
+                                        Style="{StaticResource StandardButtonStyle}" />
+                                    <Button
+                                        x:Name="DeleteSelectedButton"
+                                        Margin="0,0,10,0"
+                                        Padding="10,5"
+                                        Click="DeleteSelectedButton_Click"
+                                        Content="删除选中"
+                                        Style="{StaticResource StandardButtonStyle}" />
+                                </StackPanel>
+
+                                <ScrollViewer
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    Height="150"
+                                    Margin="5"
+                                    VerticalScrollBarVisibility="Auto">
+                                    <WrapPanel x:Name="VoicesWrapPanel" Orientation="Horizontal" />
+                                </ScrollViewer>
+                            </Grid>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem x:Name="tab4" Header="关于">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="15,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="设置 APIKEY：" />
+                        <PasswordBox
+                            x:Name="TextApikey"
+                            Width="400"
+                            Height="30"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center" />
+                        <Button
+                            x:Name="BtnSaveApikey"
+                            Width="100"
+                            Height=" 30"
+                            Margin="10,0,0,0"
+                            Click="BtnSaveApikey_Click"
+                            Content="保存"
+                            Style="{StaticResource StandardButtonStyle}" />
+                    </StackPanel>
+
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Margin="15"
+                            FontSize="16"
+                            LineHeight="30"
+                            Text="本程序调用硅基流动平台 FunAudioLLM/SenseVoiceSmall 和 FunAudioLLM/CosyVoice2-0.5B 模型功能，实现语音转文字、文字转语音功能。"
+                            TextWrapping="WrapWithOverflow" />
+
+                        <TextBlock Grid.Row="1" Margin="15">
+                            <Run Text="如何使用：登陆硅基流动官网" />
+                            <Hyperlink NavigateUri="https://siliconflow.cn" RequestNavigate="Hyperlink_RequestNavigate">
+                                <Run Text="（siliconflow.cn）" />
+                            </Hyperlink>
+                            <Run Text="，在 账户管理-&gt; API密钥，创建新密钥，复制密钥并保存，即可使用。" />
+                        </TextBlock>
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Margin="15"
+                            Text="语音转文字(ASR)使用 FunAudioLLM/SenseVoiceSmall 模型，该模型免费。" />
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Margin="15"
+                            Text="文字转语音(TTS)使用 FunAudioLLM/CosyVoice2-0.5B 模型，该模型收费 ¥50/ M UTF-8 bytes，大约可以转换 33万 字（不含标点）。" />
+
+                        <TextBlock Grid.Row="4" Margin="15">
+                            <Run Text="代码地址：" />
+                            <Hyperlink NavigateUri="https://github.com/BlackBoxRecorder/SiliconFlowAudio" RequestNavigate="Hyperlink_RequestNavigate">
+                                <Run Text="BlackBoxRecorder/SiliconFlowAudio" />
+                            </Hyperlink>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
